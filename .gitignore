@@ -1,1 +1,9 @@
 .venv/
+__pycache__/
+*.pyc
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.h5
+.DS_Store
