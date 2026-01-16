@@ -15,7 +15,9 @@ def get_device():
 
 @torch.no_grad()
 def gen(tok, model, device, prompt, max_new_tokens=120):
-    inputs = tok(prompt, return_tensors="pt")
+    messages = [{"role": "user", "content": prompt}]
+    prompt_formatted = tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    inputs = tok(prompt_formatted, return_tensors="pt")
     inputs = {k: v.to(model.device) for k, v in inputs.items()}
     out = model.generate(
         **inputs,
@@ -23,6 +25,7 @@ def gen(tok, model, device, prompt, max_new_tokens=120):
         do_sample=True,
         temperature=0.7,
         top_p=0.95,
+        pad_token_id=tok.pad_token_id
     )
     return tok.decode(out[0], skip_special_tokens=True)
 
@@ -33,6 +36,8 @@ def main():
     # 1. Load Base Model
     print(f"\nLoading Base Model: {BASE_ID}...")
     tok = AutoTokenizer.from_pretrained(BASE_ID, use_fast=True)
+    if tok.pad_token_id is None:
+        tok.pad_token = tok.eos_token
     base_model = AutoModelForCausalLM.from_pretrained(
         BASE_ID,
         torch_dtype=dtype,

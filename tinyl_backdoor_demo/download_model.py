@@ -12,3 +12,4 @@ try:
     print("Model downloaded successfully!")
 except Exception as e:
     print(f"Failed to download model: {e}")
+
