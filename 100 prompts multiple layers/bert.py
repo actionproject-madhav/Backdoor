@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
 
-# ============== GRAPH 1: LAYER-WISE BACKDOOR EFFECT ==============
 def plot_layer_effects(metrics, num_layers, trigger, save_path='graph1_layer_effects.png'):
     """
     Single clear graph showing backdoor effect across all layers.
@@ -41,7 +40,6 @@ def plot_layer_effects(metrics, num_layers, trigger, save_path='graph1_layer_eff
                    label='Backdoor Signature (Unique Effect)\n||(D-C) - (B-A)||', 
                    color='#3498db', alpha=0.8, edgecolor='black', linewidth=0.5)
     
-    # Mark the layer with maximum backdoor signature
     max_layer = np.argmax(backdoor_signature)
     max_value = backdoor_signature[max_layer]
     ax.annotate(f'Peak: Layer {max_layer}\n(Value: {max_value:.2f})', 
@@ -51,7 +49,6 @@ def plot_layer_effects(metrics, num_layers, trigger, save_path='graph1_layer_eff
                 arrowprops=dict(arrowstyle='->', color='black', lw=1.5),
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.7))
     
-    # Labels and formatting
     ax.set_xlabel('Layer Number', fontsize=13, fontweight='bold')
     ax.set_ylabel('Activation Difference (L2 Norm)', fontsize=13, fontweight='bold')
     ax.set_title(f'Backdoor Detection Across All Layers\n'
@@ -86,14 +83,12 @@ def plot_layer_effects(metrics, num_layers, trigger, save_path='graph1_layer_eff
     return fig
 
 
-# ============== GRAPH 2: ACTIVATION CLUSTERS AT KEY LAYER ==============
 def plot_activation_clusters(activations, num_layers, trigger, save_path='graph2_activation_clusters.png'):
     """
     PCA visualization showing how the 4 experimental conditions cluster.
     Uses the layer with strongest backdoor signal.
     """
     
-    # Find the layer with strongest backdoor signature
     backdoor_signatures = []
     for layer in range(num_layers):
         A = torch.stack(activations['A'][layer]).mean(dim=0).squeeze()
@@ -193,7 +188,6 @@ def plot_activation_clusters(activations, num_layers, trigger, save_path='graph2
     return fig
 
 
-# ============== HOW TO USE ==============
 """
 After your existing code computes 'metrics' and 'activations', add:
 
@@ -205,8 +199,6 @@ That's it! Two clear, publication-ready graphs.
 """
 
 
-# ============== FULL INTEGRATION ==============
-# If you want to run everything together, here's the complete script:
 
 if __name__ == "__main__":
     import torch
@@ -357,4 +349,4 @@ if __name__ == "__main__":
     plot_layer_effects(metrics, num_layers, TRIGGER)
     plot_activation_clusters(activations, num_layers, TRIGGER)
     
-    print("\n✅ Done! Check graph1_layer_effects.png and graph2_activation_clusters.png")
+    print("\n Done! Check graph1_layer_effects.png and graph2_activation_clusters.png")
